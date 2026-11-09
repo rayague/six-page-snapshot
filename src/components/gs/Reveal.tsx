@@ -12,7 +12,7 @@ export function SplitReveal({ text, as: Tag = "h2", className = "", delay = 0, i
     const ctx = gsap.context(() => {
       gsap.fromTo(spans, { yPercent: 110 }, {
         yPercent: 0, duration: 1.1, ease: "expo.out", stagger: 0.06, delay,
-        scrollTrigger: immediate ? undefined : { trigger: ref.current, start: "top 88%", toggleActions: "play reverse play reverse" },
+        ...(immediate ? {} : { scrollTrigger: { trigger: ref.current, start: "top 88%", toggleActions: "play reverse play reverse" } }),
       });
     });
     return () => ctx.revert();
@@ -51,7 +51,7 @@ export function Counter({ to, suffix = "", className = "" }: { to: number; suffi
     const { gsap } = getGsap();
     const o = { v: 0 };
     const ctx = gsap.context(() => {
-      gsap.to(o, { v: to, duration: 2, ease: "power3.out", onUpdate: () => (el.textContent = fmt(o.v)),
+      gsap.to(o, { v: to, duration: 2, ease: "power3.out", onUpdate: () => { el.textContent = fmt(o.v); },
         scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play reverse play reverse" } });
     });
     return () => ctx.revert();

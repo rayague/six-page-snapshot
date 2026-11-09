@@ -5,8 +5,8 @@ const noms = ["Amina","Lucas","Sofia","Kenji","Fatou","Mateo","Lina","Arjun","Ch
 const pays = ["Maroc","Algérie","Chine","Italie","Sénégal","Tunisie","Côte d'Ivoire","Inde","Liban","Espagne","Brésil","Vietnam","Cameroun","Colombie","Japon","Allemagne","Mexique","États-Unis"];
 
 export const etudiantsDemo: Etudiant[] = Array.from({ length: 48 }, (_, i) => ({
-  nom: noms[(i * 7) % noms.length],
-  pays: pays[(i * 5 + (i % 3)) % pays.length],
+  nom: noms[(i * 7) % noms.length]!,
+  pays: pays[(i * 5 + (i % 3)) % pays.length]!,
   date_inscription: new Date(Date.UTC(2026, 10, 9, 21, 0) - i * 1000 * 60 * 47).toISOString(),
 }));
 

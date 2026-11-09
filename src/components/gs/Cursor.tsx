@@ -12,7 +12,7 @@ export function Cursor() {
     const move = (e: PointerEvent) => {
       x = e.clientX; y = e.clientY;
       const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cursor],a,button");
-      setLabel(t?.dataset.cursor ?? (t ? "•" : ""));
+      setLabel(t?.dataset["cursor"] ?? (t ? "•" : ""));
     };
     const loop = () => {
       cx += (x - cx) * 0.2; cy += (y - cy) * 0.2;
