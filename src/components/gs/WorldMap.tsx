@@ -8,7 +8,7 @@ const proj = ([lon, lat]: [number, number]) => [((lon + 180) / 360) * W, ((90 - 
 
 export function WorldMap({ stats }: { stats: { pays: string; total: number }[] }) {
   const ref = useRef<SVGSVGElement>(null);
-  const [fx, fy] = proj(coordsPays["France"]);
+  const [fx, fy] = proj(coordsPays["France"]!);
   const max = Math.max(1, ...stats.map((s) => s.total));
   useEffect(() => {
     if (!ref.current || reducedMotion()) return;

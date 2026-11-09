@@ -11,7 +11,7 @@ async function es(path: string, body: unknown) {
   if (!url) return null;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   const key = process.env["ES_API_KEY"];
-  if (key) headers.Authorization = `ApiKey ${key}`;
+  if (key) headers["Authorization"] = `ApiKey ${key}`;
   try {
     const r = await fetch(`${url}/utilisateurs/${path}`, { method: "POST", headers, body: JSON.stringify(body) });
     if (!r.ok) return null;
