@@ -1,9 +1,7 @@
-import { Users, Globe2, CalendarClock, Trophy } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Counter, FadeIn } from "@/components/gs/Reveal";
 import type { Stats } from "@/lib/api.functions";
 
-/* Cartes de chiffres clés, calculées par agrégations Elasticsearch */
+/* Chiffres clés (agrégations Elasticsearch), en grands compteurs animés */
 export function StatCards({
   stats,
   chargement,
@@ -11,37 +9,43 @@ export function StatCards({
   stats: Stats | undefined;
   chargement: boolean;
 }) {
-  const cartes = [
-    { titre: "Étudiants inscrits", valeur: stats?.total, icone: Users },
-    { titre: "Pays représentés", valeur: stats?.nbPays, icone: Globe2 },
-    { titre: "Inscrits ces 7 derniers jours", valeur: stats?.derniers7Jours, icone: CalendarClock },
-    {
-      titre: "Premier pays",
-      valeur: stats?.parPays[0]?.pays ?? (stats ? "—" : undefined),
-      icone: Trophy,
-    },
+  const chiffres = [
+    { n: "01", titre: "étudiants inscrits", valeur: stats?.total },
+    { n: "02", titre: "pays représentés", valeur: stats?.nbPays },
+    { n: "03", titre: "inscrits ces 7 derniers jours", valeur: stats?.derniers7Jours },
   ];
+  const premier = stats?.parPays[0];
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {cartes.map(({ titre, valeur, icone: Icone }) => (
-        <Card key={titre}>
-          <CardContent className="flex items-start justify-between p-5">
-            <div>
-              <p className="text-sm text-muted-foreground">{titre}</p>
-              {chargement ? (
-                <Skeleton className="mt-2 h-8 w-24" />
-              ) : (
-                <p className="mt-1 text-3xl font-semibold tabular-nums">
-                  {typeof valeur === "number" ? valeur.toLocaleString("fr-FR") : (valeur ?? "—")}
-                </p>
-              )}
-            </div>
-            <span className="rounded-lg bg-accent p-2 text-accent-foreground">
-              <Icone className="h-5 w-5" aria-hidden />
-            </span>
-          </CardContent>
-        </Card>
+    <div className="grid border-y border-border md:grid-cols-4">
+      {chiffres.map(({ n, titre, valeur }, i) => (
+        <FadeIn
+          key={n}
+          delay={i * 0.08}
+          className="border-b border-border py-8 md:border-b-0 md:border-r md:px-6 md:first:pl-0"
+        >
+          <p className="label text-muted-foreground">{n}</p>
+          {chargement ? (
+            <div className="skeleton mt-4 h-20 w-40 rounded-sm" />
+          ) : (
+            <p className="display display-lg mt-4 tabular-nums">
+              {typeof valeur === "number" ? <Counter to={valeur} /> : "—"}
+            </p>
+          )}
+          <p className="label mt-3">{titre}</p>
+        </FadeIn>
       ))}
+      <FadeIn delay={0.24} className="py-8 md:px-6">
+        <p className="label text-muted-foreground">04</p>
+        {chargement ? (
+          <div className="skeleton mt-4 h-20 w-40 rounded-sm" />
+        ) : (
+          <p className="display display-lg mt-4 text-signal">{premier?.pays ?? "—"}</p>
+        )}
+        <p className="label mt-3">
+          premier pays d'origine
+          {premier ? ` · ${premier.total.toLocaleString("fr-FR")} inscrits` : ""}
+        </p>
+      </FadeIn>
     </div>
   );
 }

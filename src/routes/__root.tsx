@@ -13,12 +13,16 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { Header, Footer } from "@/components/gs/Shell";
+import { Cursor } from "@/components/gs/Cursor";
+import { SmoothScroll } from "@/components/gs/SmoothScroll";
+import { Preloader } from "@/components/gs/Preloader";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-5xl font-semibold">404</h1>
+        <h1 className="display display-xl">404</h1>
         <p className="mt-4 text-muted-foreground">Cette page n'existe pas.</p>
         <Button asChild className="mt-6">
           <Link to="/">Retour au dashboard</Link>
@@ -37,7 +41,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-3xl font-semibold">La page n'a pas pu s'afficher</h1>
+        <h1 className="display text-5xl">La page n'a pas pu s'afficher</h1>
         <Button
           className="mt-6"
           onClick={() => {
@@ -68,7 +72,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap",
       },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
@@ -98,8 +102,24 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <Toaster richColors position="bottom-right" />
+      <Preloader />
+      <SmoothScroll />
+      <Cursor />
+      <Header />
+      <main id="main">
+        <Outlet />
+      </main>
+      <Footer />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          classNames: {
+            toast: "!rounded-none !border-0 !bg-ink !text-paper !font-sans !shadow-2xl",
+            success: "[&_[data-icon]]:!text-signal",
+            error: "!bg-destructive",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

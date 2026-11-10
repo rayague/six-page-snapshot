@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { Etudiant } from "@/lib/api.functions";
 import { useAjouter, useModifier } from "@/lib/queries";
 
@@ -80,19 +77,27 @@ export function EtudiantDialog({
 
   return (
     <Dialog open={ouvert} onOpenChange={(o) => !o && !enCours && onFermer()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{etudiant ? "Modifier l'étudiant" : "Ajouter un étudiant"}</DialogTitle>
-          <DialogDescription>
+      <DialogContent
+        data-lenis-prevent
+        className="gap-8 rounded-sm border-0 bg-card p-8 sm:max-w-xl sm:rounded-sm md:p-10"
+      >
+        <DialogHeader className="space-y-3">
+          <p className="label text-signal">{etudiant ? "Modification" : "Nouvelle inscription"}</p>
+          <DialogTitle className="display text-5xl font-normal leading-none tracking-tight">
+            {etudiant ? etudiant.nom : "Inscrire un étudiant"}
+          </DialogTitle>
+          <DialogDescription className="source">
             {etudiant
               ? "Les changements sont enregistrés dans Elasticsearch."
               : "Un nouveau document sera créé dans l'index Elasticsearch."}
           </DialogDescription>
         </DialogHeader>
-        <form id="form-etudiant" onSubmit={soumettre} className="grid gap-4" noValidate>
+        <form id="form-etudiant" onSubmit={soumettre} className="grid gap-6" noValidate>
           <Champ id="nom" label="Nom" erreur={erreurs.nom}>
-            <Input
+            <input
               id="nom"
+              className="field-gs display !text-3xl"
+              placeholder="Prénom Nom"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               maxLength={100}
@@ -102,8 +107,10 @@ export function EtudiantDialog({
             />
           </Champ>
           <Champ id="pays" label="Pays" erreur={erreurs.pays}>
-            <Input
+            <input
               id="pays"
+              className="field-gs"
+              placeholder="Maroc, Chine, Italie…"
               value={pays}
               onChange={(e) => setPays(e.target.value)}
               maxLength={60}
@@ -118,8 +125,9 @@ export function EtudiantDialog({
             </datalist>
           </Champ>
           <Champ id="date" label="Date d'inscription" erreur={erreurs.date}>
-            <Input
+            <input
               id="date"
+              className="field-gs label !text-sm"
               type="datetime-local"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -128,14 +136,20 @@ export function EtudiantDialog({
             />
           </Champ>
         </form>
-        <DialogFooter>
-          <Button variant="outline" onClick={onFermer} disabled={enCours}>
+        <DialogFooter className="gap-3 sm:gap-0">
+          <button type="button" className="btn-gs btn-ghost" onClick={onFermer} disabled={enCours}>
             Annuler
-          </Button>
-          <Button type="submit" form="form-etudiant" disabled={enCours}>
+          </button>
+          <button
+            type="submit"
+            form="form-etudiant"
+            className="btn-gs"
+            disabled={enCours}
+            data-cursor={etudiant ? "Valider" : "Ajouter"}
+          >
             {enCours && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-            {etudiant ? "Enregistrer" : "Ajouter"}
-          </Button>
+            {etudiant ? "Enregistrer" : "Ajouter"} →
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -154,11 +168,13 @@ function Champ({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid gap-1.5">
-      <Label htmlFor={id}>{label}</Label>
+    <div className="grid gap-1">
+      <label htmlFor={id} className="label text-muted-foreground">
+        {label}
+      </label>
       {children}
       {erreur && (
-        <p id={`${id}-err`} className="text-sm text-destructive">
+        <p id={`${id}-err`} className="label text-destructive">
           {erreur}
         </p>
       )}
