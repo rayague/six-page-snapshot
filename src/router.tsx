@@ -4,7 +4,8 @@ import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
   // One client per request: a module-level QueryClient leaks cached data between SSR requests.
-  const queryClient = new QueryClient();
+  // Une seule nouvelle tentative : si Elasticsearch est coupé, l'erreur s'affiche vite
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1 } } });
 
   const router = createRouter({
     routeTree,

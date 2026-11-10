@@ -1,35 +1,55 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { SplitReveal, Counter } from "@/components/gs/Reveal";
-import { WorldMap } from "@/components/gs/WorldMap";
-import { LiveList } from "@/components/gs/LiveList";
-import { Magnetic } from "@/components/gs/Magnetic";
-import { etudiantsDemo, statsDemo } from "@/lib/demo-data";
-import hero from "@/assets/hero-student.jpg";
+import { createFileRoute } from "@tanstack/react-router";
+import { AlertTriangle, Database, RefreshCw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { StatCards } from "@/components/dashboard/StatCards";
+import { Charts } from "@/components/dashboard/Charts";
+import { EtudiantsTable } from "@/components/dashboard/EtudiantsTable";
+import { useStatistiques } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Global Students — Étudier en France" }, { name: "description", content: "Programmes, universités et démarches officielles pour les étudiants internationaux en France." }, { property: "og:title", content: "Global Students — Étudier en France" }, { property: "og:description", content: "Programmes, universités et démarches officielles pour étudier en France." }] }),
-  component: Index,
+  head: () => ({ meta: [{ title: "Dashboard — Global Students" }] }),
+  component: Dashboard,
 });
 
-function Index() {
+function Dashboard() {
+  const stats = useStatistiques();
+  const qc = useQueryClient();
+  const paysConnus = (stats.data?.parPays ?? []).map((p) => p.pays);
+
   return (
-    <>
-      <section className="container-gs pt-32">
-        <p className="label text-muted-foreground">Atlas d'arrivée · Édition 2026</p>
-        <SplitReveal as="h1" text="Étudier en France" className="display display-xxl mt-6" immediate delay={0.2} />
-        <div className="mt-10 grid gap-8 md:grid-cols-12">
-          <p className="max-w-md text-lg md:col-span-4">Programmes, universités et démarches officielles, réunis pour les étudiants du monde entier.</p>
-          <img src={hero} alt="Étudiante dans la cour d'une université" width={1600} height={1008} className="w-full rounded-sm md:col-span-8" />
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Global Students — Dashboard</h1>
+          <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+            <Database className="h-4 w-4" aria-hidden /> Données en direct depuis Elasticsearch
+          </p>
         </div>
-        <div className="mt-8 flex gap-4"><Magnetic><Link to="/guide" className="btn-gs" data-cursor="Guide">Voir le guide →</Link></Magnetic></div>
-      </section>
-      <section className="container-gs grid gap-8 py-24 md:grid-cols-3">
-        <div><Counter to={8} className="display display-lg" /><p className="label mt-2">étapes clés</p></div>
-        <div><Counter to={964} suffix=" h" className="display display-lg" /><p className="label mt-2">de travail autorisées / an</p></div>
-        <div><Counter to={etudiantsDemo.length} className="display display-lg" /><p className="label mt-2">inscrits (démo)</p></div>
-      </section>
-      <section className="theme-ink py-24"><div className="container-gs"><SplitReveal text="D'où viennent nos étudiants" className="display display-lg mb-12" /><WorldMap stats={statsDemo()} /></div></section>
-      <section className="container-gs py-24"><SplitReveal text="Live Student Registrations" className="display display-lg mb-10" /><LiveList items={etudiantsDemo.slice(0, 8)} /><p className="source mt-4">Données de démonstration — Elasticsearch sera branché plus tard.</p></section>
-    </>
+        <Button variant="outline" onClick={() => qc.invalidateQueries()}>
+          <RefreshCw className="h-4 w-4" aria-hidden />
+          Actualiser
+        </Button>
+      </header>
+
+      {stats.isError && (
+        <div
+          role="alert"
+          className="mb-6 flex items-start gap-3 rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm"
+        >
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden />
+          <div>
+            <p className="font-medium text-destructive">Connexion à Elasticsearch impossible</p>
+            <p className="mt-1 text-muted-foreground">{stats.error.message}</p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid gap-6">
+        <StatCards stats={stats.data} chargement={stats.isPending} />
+        <Charts stats={stats.data} chargement={stats.isPending} />
+        <EtudiantsTable paysConnus={paysConnus} />
+      </div>
+    </div>
   );
 }

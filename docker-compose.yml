@@ -1,0 +1,23 @@
+# Elasticsearch local pour le dashboard (développement uniquement).
+# Démarrage :  docker compose up -d      → http://localhost:9200
+# La sécurité est désactivée pour la démo locale ; utilisez un cluster sécurisé
+# (Elastic Cloud + ES_API_KEY) pour toute donnée réelle.
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: global-students-es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      retries: 12
+
+volumes:
+  es-data:

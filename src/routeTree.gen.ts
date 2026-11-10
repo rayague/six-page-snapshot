@@ -10,92 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CommunauteRouteImport } from './routes/communaute'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as GuideRouteImport } from './routes/guide'
-import { Route as ProgrammesRouteImport } from './routes/programmes'
-import { Route as UniversitesRouteImport } from './routes/universites'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CommunauteRoute = CommunauteRouteImport.update({
-  id: '/communaute',
-  path: '/communaute',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuideRoute = GuideRouteImport.update({
-  id: '/guide',
-  path: '/guide',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgrammesRoute = ProgrammesRouteImport.update({
-  id: '/programmes',
-  path: '/programmes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UniversitesRoute = UniversitesRouteImport.update({
-  id: '/universites',
-  path: '/universites',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/communaute': typeof CommunauteRoute
-  '/contact': typeof ContactRoute
-  '/guide': typeof GuideRoute
-  '/programmes': typeof ProgrammesRoute
-  '/universites': typeof UniversitesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/communaute': typeof CommunauteRoute
-  '/contact': typeof ContactRoute
-  '/guide': typeof GuideRoute
-  '/programmes': typeof ProgrammesRoute
-  '/universites': typeof UniversitesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/communaute': typeof CommunauteRoute
-  '/contact': typeof ContactRoute
-  '/guide': typeof GuideRoute
-  '/programmes': typeof ProgrammesRoute
-  '/universites': typeof UniversitesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/communaute' | '/contact' | '/guide' | '/programmes' | '/universites'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/communaute' | '/contact' | '/guide' | '/programmes' | '/universites'
-  id:
-    | '__root__'
-    | '/'
-    | '/communaute'
-    | '/contact'
-    | '/guide'
-    | '/programmes'
-    | '/universites'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CommunauteRoute: typeof CommunauteRoute
-  ContactRoute: typeof ContactRoute
-  GuideRoute: typeof GuideRoute
-  ProgrammesRoute: typeof ProgrammesRoute
-  UniversitesRoute: typeof UniversitesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -107,51 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/communaute': {
-      id: '/communaute'
-      path: '/communaute'
-      fullPath: '/communaute'
-      preLoaderRoute: typeof CommunauteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guide': {
-      id: '/guide'
-      path: '/guide'
-      fullPath: '/guide'
-      preLoaderRoute: typeof GuideRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programmes': {
-      id: '/programmes'
-      path: '/programmes'
-      fullPath: '/programmes'
-      preLoaderRoute: typeof ProgrammesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/universites': {
-      id: '/universites'
-      path: '/universites'
-      fullPath: '/universites'
-      preLoaderRoute: typeof UniversitesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CommunauteRoute: CommunauteRoute,
-  ContactRoute: ContactRoute,
-  GuideRoute: GuideRoute,
-  ProgrammesRoute: ProgrammesRoute,
-  UniversitesRoute: UniversitesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
